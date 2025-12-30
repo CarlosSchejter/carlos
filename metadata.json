@@ -1,0 +1,7 @@
+{
+  "name": "Farmatotal Diabetes Care",
+  "description": "A comprehensive diabetes management and pharmacy app with AI-powered consultation, glucose tracking, and healthcare commerce.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
