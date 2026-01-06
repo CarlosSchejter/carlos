@@ -1,3 +1,4 @@
+
 export default function Store({ onBack }) {
   return (
     <div className="p-6">
