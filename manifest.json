@@ -1,0 +1,33 @@
+
+{
+  "name": "Farmatotal Diabetes Care",
+  "short_name": "Farmatotal",
+  "description": "App de gestión de diabetes para pacientes de Farmatotal Mendoza.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1e3a8a",
+  "orientation": "portrait",
+  "categories": ["medical", "health"],
+  "icons": [
+    {
+      "src": "https://api.dicebear.com/7.x/shapes/png?seed=farmatotal&backgroundColor=1e3a8a&size=192",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://api.dicebear.com/7.x/shapes/png?seed=farmatotal&backgroundColor=1e3a8a&size=192",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "https://api.dicebear.com/7.x/shapes/png?seed=farmatotal&backgroundColor=1e3a8a&size=512",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

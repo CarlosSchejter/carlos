@@ -1,54 +1,36 @@
+import { GoogleGenAI } from "@google/genai";
 
-import { GoogleGenAI, Type } from "@google/genai";
-
-const API_KEY = process.env.API_KEY || '';
-
-export const getGeminiResponse = async (prompt: string, history: { role: 'user' | 'model', parts: { text: string }[] }[]) => {
-  if (!API_KEY) {
-    return "Error: API Key no configurada. Por favor, contacte al administrador.";
+export const getGeminiResponse = async (prompt: string, history: any[]) => {
+  const apiKey = process.env.API_KEY;
+  
+  if (!apiKey || apiKey === "undefined") {
+    console.error("API_KEY no configurada");
+    return "¡Hola! Estoy esperando que el administrador configure mi clave de acceso. Mientras tanto, puedes contactar a Patricia por WhatsApp.";
   }
 
-  const ai = new GoogleGenAI({ apiKey: API_KEY });
-  
   try {
+    const ai = new GoogleGenAI({ apiKey });
+    
+    const formattedHistory = history.map(m => ({
+      role: m.role === 'user' ? 'user' : 'model',
+      parts: [{ text: String(m.text || "") }]
+    }));
+
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: [
-        ...history,
+        ...formattedHistory,
         { role: 'user', parts: [{ text: prompt }] }
       ],
       config: {
-        systemInstruction: `
-          Eres un asistente experto de Farmatotal especializado en el cuidado de la diabetes. 
-          Tu objetivo es proporcionar información educativa, consejos de salud y guiar a los usuarios en el uso de productos de farmacia. 
-          IMPORTANTE: 
-          1. NO recetes medicamentos.
-          2. Ante emergencias médicas, siempre indica al usuario que llame al 911 o acuda a urgencias.
-          3. Sé amable, profesional y empático.
-          4. Si el usuario pregunta por productos, menciona que puede verlos en la sección "Comprar" de la app.
-          5. Tu tono debe ser alentador y claro.
-        `,
+        systemInstruction: "Eres el Asistente de Farmatotal Mendoza. Responde de forma muy amable, profesional y breve. Eres experto en diabetes. Si la duda es médica grave, redirige siempre a Patricia o a un médico.",
         temperature: 0.7,
-        topP: 0.9,
-      }
+      },
     });
 
-    return response.text || "No pude generar una respuesta en este momento.";
-  } catch (error) {
-    console.error("Gemini Error:", error);
-    return "Lo siento, hubo un problema técnico al procesar tu consulta.";
-  }
-};
-
-export const summarizeHealthProgress = async (readings: string) => {
-  const ai = new GoogleGenAI({ apiKey: API_KEY });
-  try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
-      contents: `Analiza estas mediciones de glucosa y dame un resumen corto (2 frases) y alentador: ${readings}`,
-    });
-    return response.text;
-  } catch (error) {
-    return "Sigue así, cada medición cuenta para tu bienestar.";
+    return response.text || "No logré procesar tu consulta, ¿podrías repetirla?";
+  } catch (error: any) {
+    console.error("Error en Gemini:", error);
+    return "Lo siento, tuve un problema de conexión. Por favor, intenta de nuevo en unos segundos.";
   }
 };

@@ -1,92 +1,118 @@
 
-console.log("✅ App.tsx montado correctamente");
-import React, { useState } from 'react';
-import { User, Bell, ChevronLeft, Settings } from 'lucide-react';
-import { AppView, GlucoseReading } from './types';
-import { MOCK_HISTORY } from './constants';
-import Dashboard from './components/Dashboard';
-import Store from './components/Store';
-import ChatAssistant from './components/ChatAssistant';
-import LearningHub from './components/LearningHub';
-import Tracker from './components/Tracker';
+import React, { useState, useEffect } from 'react';
+import { Home, Activity, MessageCircle, BookOpen, ShoppingCart } from 'lucide-react';
+import { AppView, GlucoseReading } from './types.ts';
+import { MOCK_HISTORY } from './constants.tsx';
+import Dashboard from './components/Dashboard.tsx';
+import Store from './components/Store.tsx';
+import ChatAssistant from './components/ChatAssistant.tsx';
+import LearningHub from './components/LearningHub.tsx';
+import Tracker from './components/Tracker.tsx';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>('dashboard');
   const [history, setHistory] = useState<GlucoseReading[]>(MOCK_HISTORY);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [logoClicks, setLogoClicks] = useState(0);
+  const [hasError, setHasError] = useState(false);
 
-  const getViewTitle = () => {
-    switch(currentView) {
-      case 'store': return 'Comprar';
-      case 'chat': return 'Consultar';
-      case 'learn': return 'Aprender';
-      case 'tracker': return 'Mi Diabetes';
-      default: return '';
+  useEffect(() => {
+    try {
+      const savedAdmin = localStorage.getItem('farmatotal_admin_mode') === 'true';
+      setIsAdmin(savedAdmin);
+    } catch (e) {
+      console.warn("LocalStorage no disponible");
     }
-  };
+  }, []);
+
+  if (hasError) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen bg-blue-900 text-white p-10 text-center">
+        <h1 className="text-6xl font-black mb-4">+</h1>
+        <h2 className="text-xl font-bold uppercase mb-4">Ocurrió un error</h2>
+        <button onClick={() => window.location.reload()} className="bg-white text-blue-900 px-8 py-4 rounded-full font-black">REINTENTAR</button>
+      </div>
+    );
+  }
 
   const renderView = () => {
-    switch (currentView) {
-      case 'dashboard':
-        return <Dashboard onViewChange={setCurrentView} history={history} />;
-      case 'store':
-        return <Store onBack={() => setCurrentView('dashboard')} />;
-      case 'chat':
-        return <ChatAssistant onBack={() => setCurrentView('dashboard')} />;
-      case 'learn':
-        return <LearningHub onBack={() => setCurrentView('dashboard')} />;
-      case 'tracker':
-        return <Tracker onBack={() => setCurrentView('dashboard')} history={history} setHistory={setHistory} />;
-      default:
-        return <Dashboard onViewChange={setCurrentView} history={history} />;
+    try {
+      switch (currentView) {
+        case 'dashboard': return <Dashboard onViewChange={setCurrentView} history={history} isAdmin={isAdmin} />;
+        case 'tracker': return <Tracker onBack={() => setCurrentView('dashboard')} history={history} setHistory={setHistory} />;
+        case 'chat': return <ChatAssistant onBack={() => setCurrentView('dashboard')} isAdmin={isAdmin} />;
+        case 'learn': return <LearningHub />;
+        case 'store': return <Store onBack={() => setCurrentView('dashboard')} />;
+        default: return <Dashboard onViewChange={setCurrentView} history={history} isAdmin={isAdmin} />;
+      }
+    } catch (e) {
+      console.error("View render error:", e);
+      setHasError(true);
+      return null;
     }
   };
 
+  const handleLogoClick = () => {
+    const newClicks = logoClicks + 1;
+    if (newClicks >= 5) {
+      const newState = !isAdmin;
+      setIsAdmin(newState);
+      localStorage.setItem('farmatotal_admin_mode', String(newState));
+      setLogoClicks(0);
+      alert(newState ? "🔓 MODO FARMACIA" : "🔒 MODO PACIENTE");
+    } else {
+      setLogoClicks(newClicks);
+      setTimeout(() => setLogoClicks(0), 2000);
+    }
+  };
+
+  const NavButton = ({ view, icon: Icon, label }: { view: AppView, icon: any, label: string }) => (
+    <button 
+      onClick={() => setCurrentView(view)}
+      className={`flex flex-col items-center justify-center gap-1 flex-1 py-4 transition-all active:scale-90 ${
+        currentView === view ? 'text-blue-900' : 'text-slate-400'
+      }`}
+    >
+      <div className={`p-2 rounded-2xl transition-all ${currentView === view ? 'bg-blue-100/50' : 'bg-transparent'}`}>
+        <Icon className={`w-6 h-6 ${currentView === view ? 'stroke-[3.5px]' : 'stroke-[2px]'}`} />
+      </div>
+      <span className={`text-[8px] font-black uppercase tracking-tighter ${currentView === view ? 'opacity-100' : 'opacity-70'}`}>
+        {label}
+      </span>
+    </button>
+  );
+
   return (
-    <div className="min-h-screen flex flex-col max-w-md mx-auto bg-white shadow-xl relative">
-      <header className="p-4 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-50">
-        <div className="flex items-center gap-3">
-          {currentView === 'dashboard' ? (
-            <div className="bg-[#1e3a8a] px-3 py-1.5 rounded-lg flex items-center gap-2">
-              <div className="bg-red-500 rounded-full p-0.5 w-4 h-4 flex items-center justify-center">
-                 <span className="text-white text-[10px] font-bold">+</span>
-              </div>
-              <span className="text-white font-bold text-sm tracking-tight uppercase">farmatotal</span>
+    <div className="min-h-screen flex flex-col max-w-md mx-auto bg-white shadow-2xl relative overflow-hidden border-x border-slate-100">
+      <header className="p-5 border-b-2 border-slate-50 sticky top-0 bg-white z-[60] shadow-sm">
+        <div className="flex flex-col items-center cursor-pointer select-none" onClick={handleLogoClick}>
+          <div className="flex items-center gap-2 mb-1">
+            <div className="bg-red-600 rounded-md w-5 h-5 flex items-center justify-center shadow-md">
+               <span className="text-white text-[12px] font-black">+</span>
             </div>
-          ) : (
-            <button onClick={() => setCurrentView('dashboard')} className="p-1 hover:bg-gray-100 rounded-full">
-              <ChevronLeft className="w-6 h-6 text-gray-600" />
-            </button>
-          )}
-        </div>
-
-        <div className="flex-1 px-4">
-           <span className="font-bold text-gray-800">{getViewTitle()}</span>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <Bell className="w-5 h-5 text-gray-400 cursor-pointer" />
-            <span className="absolute -top-1 -right-1 bg-red-500 w-2.5 h-2.5 rounded-full border-2 border-white"></span>
+            <h1 className="text-[#1e3a8a] font-black text-3xl tracking-tighter uppercase leading-none border-b-[4px] border-blue-900/10 pb-1">
+              FARMATOTAL
+            </h1>
           </div>
-          <User className="w-5 h-5 text-gray-400 cursor-pointer" />
+          <div className="bg-[#1e3a8a] px-6 py-1 rounded-full">
+             <span className="text-white text-[10px] font-black uppercase tracking-[0.2em]">Diabetes Care</span>
+          </div>
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto pb-4">
+      <main className="flex-1 overflow-y-auto bg-slate-50/20">
         {renderView()}
       </main>
 
-      {currentView === 'dashboard' && (
-        <footer className="p-4 flex justify-center border-t border-gray-100 bg-gray-50">
-          <button className="flex items-center gap-2 text-[10px] text-gray-400 hover:text-gray-600 uppercase tracking-widest font-bold">
-            <Settings className="w-3 h-3" />
-            Acceso administrador
-          </button>
-        </footer>
-      )}
+      <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] px-2 py-1 flex items-center justify-between z-[100] safe-area-bottom">
+        <NavButton view="dashboard" icon={Home} label="Inicio" />
+        <NavButton view="tracker" icon={Activity} label="Azúcar" />
+        <NavButton view="chat" icon={MessageCircle} label="IA Chat" />
+        <NavButton view="learn" icon={BookOpen} label="Aprender" />
+        <NavButton view="store" icon={ShoppingCart} label="Tienda" />
+      </nav>
     </div>
   );
 };
 
 export default App;
-
