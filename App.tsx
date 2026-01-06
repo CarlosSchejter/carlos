@@ -1,7 +1,5 @@
-
 import React, { useState } from 'react';
-import { HashRouter as Router } from 'react-router-dom';
-import { User, Bell, ChevronLeft, Menu, Settings } from 'lucide-react';
+import { User, Bell, ChevronLeft, Settings } from 'lucide-react';
 import { AppView, GlucoseReading } from './types';
 import { MOCK_HISTORY } from './constants';
 import Dashboard from './components/Dashboard';
@@ -43,7 +41,6 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col max-w-md mx-auto bg-white shadow-xl relative">
-      {/* Header aligned to the screenshot */}
       <header className="p-4 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-50">
         <div className="flex items-center gap-3">
           {currentView === 'dashboard' ? (
@@ -73,7 +70,6 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Content */}
       <main className="flex-1 overflow-y-auto pb-4">
         {renderView()}
       </main>
@@ -91,3 +87,4 @@ const App: React.FC = () => {
 };
 
 export default App;
+
