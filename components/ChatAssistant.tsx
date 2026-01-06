@@ -1,4 +1,5 @@
-src/components/ChatAssistant.tsx
+src/components/Dashboard.tsx
+
 
 export default function ChatAssistant({ onBack }) {
   return (
