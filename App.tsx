@@ -1,4 +1,5 @@
 
+console.log("✅ App.tsx montado correctamente");
 import React, { useState } from 'react';
 import { User, Bell, ChevronLeft, Settings } from 'lucide-react';
 import { AppView, GlucoseReading } from './types';
