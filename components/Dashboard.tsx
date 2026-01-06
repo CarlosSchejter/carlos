@@ -1,3 +1,4 @@
+src/components/ChatAssistant.tsx
 
 export default function Dashboard({ onViewChange, history }) {
   return (
