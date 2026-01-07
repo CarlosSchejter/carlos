@@ -1,63 +1,78 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Farmatotal - Diabetes Care</title>
-    <link rel="manifest" href="/manifest.json" />
-<meta name="theme-color" content="#1e3a8a" />
-    <script>
-        // Configuración de entorno básica
-        window.process = { env: { NODE_ENV: 'production' } };
-        
-        // Monitor de errores mejorado
-        window.onerror = function(msg, url, line) {
-            console.error("Error detectado:", msg);
-            var root = document.getElementById('root');
-            if (root && (root.innerHTML === '' || root.innerHTML.includes('spinner'))) {
-                root.innerHTML = '<div style="padding:40px;color:white;background:#1e3a8a;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:sans-serif;">' +
-                    '<h1 style="font-size:60px;margin:0;">+</h1>' +
-                    '<h2 style="text-transform:uppercase;letter-spacing:2px;font-size:18px;margin-top:20px;">Error de Carga</h2>' +
-                    '<p style="opacity:0.8;font-size:12px;margin:20px 0;">Error en los módulos del sistema. Por favor, recarga la página.</p>' +
-                    '<button onclick="location.reload()" style="background:white;color:#1e3a8a;padding:15px 30px;border-radius:20px;border:none;font-weight:bold;cursor:pointer;">REINTENTAR</button>' +
-                '</div>';
-            }
-        };
-    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Farmatotal - Diabetes Care</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    
-    <script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@19.0.0",
-    "react-dom": "https://esm.sh/react-dom@19.0.0",
-    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
-    "lucide-react": "https://esm.sh/lucide-react@0.471.0?deps=react@19.0.0",
-    "@google/genai": "https://esm.sh/@google/genai@1.3.0",
-    "recharts": "https://esm.sh/recharts@2.15.0?deps=react@19.0.0,react-dom@19.0.0",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+  <!-- ✅ PWA: manifest y theme color -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1e3a8a" />
+
+  <script>
+    // Configuración de entorno básica
+    window.process = { env: { NODE_ENV: 'production' } };
+
+    // Monitor de errores mejorado
+    window.onerror = function(msg, url, line) {
+      console.error("Error detectado:", msg);
+      var root = document.getElementById('root');
+      if (root && (root.innerHTML === '' || root.innerHTML.includes('spinner'))) {
+        root.innerHTML = '<div style="padding:40px;color:white;background:#1e3a8a;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:sans-serif;">' +
+          '<h1 style="font-size:60px;margin:0;">+</h1>' +
+          '<h2 style="text-transform:uppercase;letter-spacing:2px;font-size:18px;margin-top:20px;">Error de Carga</h2>' +
+          '<p style="opacity:0.8;font-size:12px;margin:20px 0;">Error en los módulos del sistema. Por favor, recarga la página.</p>' +
+          '<button onclick="location.reload()" style="background:white;color:#1e3a8a;padding:15px 30px;border-radius:20px;border:none;font-weight:bold;cursor:pointer;">REINTENTAR</button>' +
+        '</div>';
+      }
+    };
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet" />
+
+  <script type="importmap">
+  {
+    "imports": {
+      "react": "https://esm.sh/react@19.0.0",
+      "react-dom": "https://esm.sh/react-dom@19.0.0",
+      "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
+      "lucide-react": "https://esm.sh/lucide-react@0.471.0?deps=react@19.0.0",
+      "@google/genai": "https://esm.sh/@google/genai@1.3.0",
+      "recharts": "https://esm.sh/recharts@2.15.0?deps=react@19.0.0,react-dom@19.0.0",
+      "react/": "https://esm.sh/react@^19.2.3/",
+      "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+    }
   }
-}
-</script>
-    
-    <style>
-        body { margin: 0; background: #ffffff; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #1e3a8a; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        * { scrollbar-width: none; -ms-overflow-style: none; }
-        *::-webkit-scrollbar { display: none; }
-    </style>
+  </script>
+
+  <style>
+    body { margin: 0; background: #ffffff; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+    .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #1e3a8a; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    * { scrollbar-width: none; -ms-overflow-style: none; }
+    *::-webkit-scrollbar { display: none; }
+  </style>
 </head>
 <body>
-    <div id="root">
-        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:white;">
-            <div class="spinner"></div>
-            <p style="margin-top:20px;font-weight:900;color:#1e3a8a;font-size:10px;text-transform:uppercase;letter-spacing:3px;opacity:0.6;">Farmatotal Mendoza</p>
-        </div>
+  <div id="root">
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:white;">
+      <div class="spinner"></div>
+      <p style="margin-top:20px;font-weight:900;color:#1e3a8a;font-size:10px;text-transform:uppercase;letter-spacing:3px;opacity:0.6;">Farmatotal Mendoza</p>
     </div>
-    <script type="module" src="index.tsx"></script>
+  </div>
+
+  <script type="module" src="index.tsx"></script>
+
+  <!-- ✅ Registro del Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('Service Worker registrado:', reg))
+          .catch(err => console.error('Error al registrar SW:', err));
+      });
+    }
+  </script>
 </body>
 </html>
